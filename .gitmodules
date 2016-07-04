@@ -1,0 +1,3 @@
+[submodule "3rdparty/IrrIMGUI"]
+	path = 3rdparty/IrrIMGUI
+	url = https://github.com/wose/IrrIMGUI.git
