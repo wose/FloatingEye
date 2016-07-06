@@ -1,3 +1,6 @@
 [submodule "3rdparty/IrrIMGUI"]
 	path = 3rdparty/IrrIMGUI
 	url = https://github.com/wose/IrrIMGUI.git
+[submodule "3rdparty/lsclient"]
+	path = 3rdparty/lsclient
+	url = https://github.com/quotekio/cpp-lsclient.git

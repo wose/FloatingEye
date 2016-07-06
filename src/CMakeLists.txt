@@ -4,22 +4,14 @@ set(floatingeye_SRC
 
 set(floatingeye_HDR
   )
-SET(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
-find_package(OpenSSL REQUIRED)
-add_definitions(-DBOOST_NETWORK_ENABLE_HTTPS)
+set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
+
 find_package(OpenGL REQUIRED)
 find_package(Irrlicht REQUIRED)
-find_package (Threads)
-find_package( Boost REQUIRED COMPONENTS thread system)
-include_directories(${Boost_INCLUDE_DIRS})
+find_package(Threads)
 
-find_package(cppnetlib REQUIRED)
-include_directories(${CPPNETLIB_INCLUDE_DIRS})
-
-
-#include_directories(${PROJECT_SOURCE_DIR}/3rdparty/cpp-netlib/deps/uri/include)
-#include_directories(${PROJECT_SOURCE_DIR}/3rdparty/cpp-netlib)
+include_directories(${PROJECT_SOURCE_DIR}/3rdparty/lsclient/include)
 include_directories(${PROJECT_SOURCE_DIR}/3rdparty/IrrIMGUI/includes)
 include_directories(${PROJECT_SOURCE_DIR}/3rdparty/IrrIMGUI/dependency)
 include_directories(${IRRLICHT_INCLUDE_DIR} ${OPENGL_INCLUDE_DIR})
@@ -27,7 +19,7 @@ include_directories(${IRRLICHT_INCLUDE_DIR} ${OPENGL_INCLUDE_DIR})
 add_definitions(-DIMGUI_DISABLE_TEST_WINDOWS)
 
 add_executable(floatingeye ${floatingeye_SRC})
-target_link_libraries(floatingeye ${OPENGL_LIBRARIES} ${IRRLICHT_LIBRARY} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES} ${CPPNETLIB_LIBRARIES} ${OPENSSL_LIBRARIES} IrrIMGUI)
+target_link_libraries(floatingeye ${OPENGL_LIBRARIES} ${IRRLICHT_LIBRARY} ${CMAKE_THREAD_LIBS_INIT} IrrIMGUI lsclient)
 
 add_custom_command(TARGET floatingeye POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy_directory

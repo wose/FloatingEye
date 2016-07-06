@@ -1,7 +1,4 @@
 set(IRRIMGUI_BUILD_EXAMPLES OFF)
 add_subdirectory(IrrIMGUI)
 
-#set(CPP-NETLIB_BUILD_EXAMPLES OFF CACHE BOOL "")
-#set(CPP-NETLIB_BUILD_TESTS OFF CACHE BOOL "")
-#set(CPP-NETLIB_BUILD_SHARED_LIBS ON CACHE BOOL "")
-#add_subdirectory(cpp-netlib)
+add_subdirectory(lsclient)

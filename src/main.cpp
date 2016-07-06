@@ -42,7 +42,7 @@ int main (int argc, char *argv[]) {
     // Start main loop
     while(pDevice->run())
     {
-        pDriver->beginScene(true, true, irr::video::SColor(255,100,101,140));
+        pDriver->beginScene(true, true, irr::video::SColor(255, 80, 80, 80));
 
         // create the GUI elements
         pGUI->startGUI();
@@ -105,10 +105,8 @@ void calculateTerminator(ImVec2& worldMapStart)
 
     double utcHour = ptm->tm_hour + ptm->tm_min / 60 + ptm->tm_sec / 3600;
 
-    //UT=UTChour+UTCmin/60+UTCsec/3600;
-    if(ptm->tm_mon <= 2) {
-        ptm->tm_mon = ptm->tm_mon + 12;
-    }
+    if(ptm->tm_mon <= 2) ptm->tm_mon += 12;
+
     ptm->tm_year--;
 
     double julianDate = (365.25 * ptm->tm_year) + (30.6001 * (ptm->tm_mon + 1))
@@ -117,19 +115,15 @@ void calculateTerminator(ImVec2& worldMapStart)
     double T = (julianDate - 2451545.0 ) / 36525;
     double L = 280.46645 + 36000.76983 * T + 0.0003032 * T * T;
     L = fmod(L, 360);
-    if(L < 0) {
-        L = L + 360;
-    }
+    if(L < 0) L += 360;
 
     double M = 357.52910 + 35999.05030 * T - 0.0001559 * T * T - 0.00000048 * T * T * T;
     M = fmod(M, 360);
-    if(M < 0) {
-        M = M + 360;
-    }
+    if(M < 0) M += 360;
 
     double C = (1.914600 - 0.004817 * T - 0.000014 * T * T) * sin(K * M);
-    C = C + (0.019993 - 0.000101 * T) * sin(K * 2 * M);
-    C = C + 0.000290 * sin(K * 3 * M);
+    C += (0.019993 - 0.000101 * T) * sin(K * 2 * M);
+    C += 0.000290 * sin(K * 3 * M);
     double theta = L + C;
     double LS = L;
     double LM = 218.3165 + 481267.8813 * T;
@@ -143,20 +137,16 @@ void calculateTerminator(ImVec2& worldMapStart)
     double delta = asin(sin(K * eps) * sin(K * lambda));
     double dec = delta / K;
     double tau = utcHour * 15;
-    /*
-      % coords is (lon, lat)
-      coords=[[-180:180]',zeros(361,1)];
-      coords(1:360,2)=atan(cos((coords(1:360)+tau)*K)/tan(dec*K))/K;
-      coords(361,2)=coords(1,2);
-    */
 
     auto draw_list = ImGui::GetWindowDrawList();
+    draw_list->PathClear();
+
     for(double lon = -180; lon <= 180; ++lon) {
         double lat = atan(cos((lon + tau) * K) / tan(dec * K)) / K;
-        draw_list->AddCircleFilled(
-                                   ImVec2(worldMapStart.x + 540 + lon * 3,
-                                          worldMapStart.y + 270 - lat * 3),
-                                   1.0, ImColor(200, 0, 0));
-
+        ImGui::Text("Lon: %.2f Lat: %.2f", lon, lat);
+        draw_list->PathLineTo(ImVec2(worldMapStart.x + 540 + lon * 3,
+                                     worldMapStart.y + 270 - lat * 3));
     }
+
+    draw_list->PathStroke(ImColor(0, 0, 0, 128), false);
 }
