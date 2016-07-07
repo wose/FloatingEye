@@ -139,14 +139,23 @@ void calculateTerminator(ImVec2& worldMapStart)
     double tau = utcHour * 15;
 
     auto draw_list = ImGui::GetWindowDrawList();
-    draw_list->PathClear();
+    double base = worldMapStart.y + 540;
+    //    draw_list->PathClear();
 
     for(double lon = -180; lon <= 180; ++lon) {
         double lat = atan(cos((lon + tau) * K) / tan(dec * K)) / K;
         ImGui::Text("Lon: %.2f Lat: %.2f", lon, lat);
         draw_list->PathLineTo(ImVec2(worldMapStart.x + 540 + lon * 3,
                                      worldMapStart.y + 270 - lat * 3));
-    }
 
-    draw_list->PathStroke(ImColor(0, 0, 0, 128), false);
+        /* since we can only draw convex polygons we need to split the curve in quads */
+        if(lon > -180) {
+            draw_list->PathLineTo(ImVec2(worldMapStart.x + 540 + lon * 3, base));
+            draw_list->PathLineTo(ImVec2(worldMapStart.x + 540 + (lon - 1) * 3, base));
+            draw_list->PathFill(ImColor(0, 0, 0, 80));
+            draw_list->PathClear();
+            draw_list->PathLineTo(ImVec2(worldMapStart.x + 540 + lon * 3,
+                                         worldMapStart.y + 270 - lat * 3));
+        }
+    }
 }
