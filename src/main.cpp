@@ -1,3 +1,7 @@
+#include "EmptyWidget.h"
+#include "Grid.h"
+#include "VideoStream.h"
+
 #include "IrrIMGUI/IrrIMGUI.h"
 #include "IrrIMGUI/IncludeIrrlicht.h"
 
@@ -31,13 +35,18 @@ int main (int argc, char *argv[]) {
 
     scene::ISceneManager * const pSceneManager = pDevice->getSceneManager();
     video::IVideoDriver * const pDriver = pDevice->getVideoDriver();
+    pDriver->setTextureCreationFlag(irr::video::ETCF_CREATE_MIP_MAPS, false);
 
     auto worldImage = pDriver->createImageFromFile("GRAY_50M_SR_W.png");
     auto worldTex = pGUI->createTexture(worldImage);
     worldImage->drop();
 
+    //VideoStream videoStream("", pDriver, pGUI);
+
     // add camera to the scene
     pSceneManager->addCameraSceneNode(0, core::vector3df(0, 0, 0), core::vector3df(0,0,5));
+
+    Grid layout("ISS", 8, 8);
 
     // Start main loop
     while(pDevice->run())
@@ -75,6 +84,11 @@ int main (int argc, char *argv[]) {
             pDevice->closeDevice();
         }
         ImGui::End();
+
+        layout.draw();
+        //ImGui::Begin("ISS Live Stream (no audio)");
+        //videoStream.draw();
+        //ImGui::End();
 
         // render your scene
         pSceneManager->drawAll();
