@@ -2,12 +2,14 @@ set(floatingeye_SRC
   main.cpp
   EmptyWidget.cpp
   Grid.cpp
+  MapWidget.cpp
   VideoStream.cpp
   )
 
 set(floatingeye_HDR
   EmptyWidget.h
   Grid.h
+  MapWidget.h
   IWidget.h
   VideoStream.h
   )

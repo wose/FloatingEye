@@ -33,8 +33,11 @@ int main (int argc, char *argv[]) {
     // Create GUI object
     IIMGUIHandle * const pGUI = createIMGUI(pDevice, &EventReceiver);
 
-    scene::ISceneManager * const pSceneManager = pDevice->getSceneManager();
-    video::IVideoDriver * const pDriver = pDevice->getVideoDriver();
+    //    scene::ISceneManager * const pSceneManager = pDevice->getSceneManager();
+    //    video::IVideoDriver * const pDriver = pDevice->getVideoDriver();
+    auto pSceneManager = pDevice->getSceneManager();
+    auto pDriver = pDevice->getVideoDriver();
+
     pDriver->setTextureCreationFlag(irr::video::ETCF_CREATE_MIP_MAPS, false);
 
     auto worldImage = pDriver->createImageFromFile("GRAY_50M_SR_W.png");
@@ -46,7 +49,7 @@ int main (int argc, char *argv[]) {
     // add camera to the scene
     pSceneManager->addCameraSceneNode(0, core::vector3df(0, 0, 0), core::vector3df(0,0,5));
 
-    Grid layout("ISS", 8, 8);
+    Grid layout("ISS", 12, 5);
 
     // Start main loop
     while(pDevice->run())

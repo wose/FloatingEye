@@ -11,8 +11,28 @@ Grid::Grid(const std::string& name, int cols /* =1 */, int rows /* = 1 */) :
     cols_{cols},
     rows_{rows}
 {
-    cells_.emplace_back(std::make_unique<Cell>(std::make_shared<EmptyWidget>("Empty1")));
-    cells_.emplace_back(std::make_unique<Cell>(std::make_shared<EmptyWidget>("Empty2"), 2, 2, 2, 2));
+    // row 1
+    cells_.emplace_back(std::make_unique<Cell>(std::make_shared<EmptyWidget>("Video 1"), 0, 0, 4, 2));
+    cells_.emplace_back(std::make_unique<Cell>(std::make_shared<EmptyWidget>("Video 2"), 4, 0, 4, 2));
+    cells_.emplace_back(std::make_unique<Cell>(std::make_shared<EmptyWidget>("Map"), 8, 0, 4, 2));
+
+    // row 2
+    cells_.emplace_back(std::make_unique<Cell>(std::make_shared<EmptyWidget>("Blueprint"), 0, 2, 8, 2));
+    cells_.emplace_back(std::make_unique<Cell>(std::make_shared<EmptyWidget>("Stats"), 8, 2, 4, 2));
+
+    // row 3
+    cells_.emplace_back(std::make_unique<Cell>(std::make_shared<EmptyWidget>("Sensor 1"), 0, 4, 1, 1));
+    cells_.emplace_back(std::make_unique<Cell>(std::make_shared<EmptyWidget>("Sensor 2"), 1, 4, 1, 1));
+    cells_.emplace_back(std::make_unique<Cell>(std::make_shared<EmptyWidget>("Sensor 3"), 2, 4, 1, 1));
+    cells_.emplace_back(std::make_unique<Cell>(std::make_shared<EmptyWidget>("Sensor 4"), 3, 4, 1, 1));
+    cells_.emplace_back(std::make_unique<Cell>(std::make_shared<EmptyWidget>("Sensor 5"), 4, 4, 1, 1));
+    cells_.emplace_back(std::make_unique<Cell>(std::make_shared<EmptyWidget>("Sensor 6"), 5, 4, 1, 1));
+    cells_.emplace_back(std::make_unique<Cell>(std::make_shared<EmptyWidget>("Sensor 7"), 6, 4, 1, 1));
+    cells_.emplace_back(std::make_unique<Cell>(std::make_shared<EmptyWidget>("Sensor 8"), 7, 4, 1, 1));
+    cells_.emplace_back(std::make_unique<Cell>(std::make_shared<EmptyWidget>("Sensor 9"), 8, 4, 1, 1));
+    cells_.emplace_back(std::make_unique<Cell>(std::make_shared<EmptyWidget>("Sensor 10"), 9, 4, 1, 1));
+    cells_.emplace_back(std::make_unique<Cell>(std::make_shared<EmptyWidget>("Sensor 11"), 10, 4, 1, 1));
+    cells_.emplace_back(std::make_unique<Cell>(std::make_shared<EmptyWidget>("Sensor 12"), 11, 4, 1, 1));
 }
 
 void Grid::draw() const
