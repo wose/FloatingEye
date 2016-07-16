@@ -1,12 +1,14 @@
 #include "EmptyWidget.h"
 #include "Grid.h"
 #include "IWidget.h"
+#include "MapWidget.h"
 
 #include "IrrIMGUI/IrrIMGUI.h"
 
 #include <memory>
 
-Grid::Grid(const std::string& name, int cols /* =1 */, int rows /* = 1 */) :
+Grid::Grid(const std::string& name, irr::video::IVideoDriver* const irrDriver,
+           IrrIMGUI::IIMGUIHandle* const imGuiHandle, int cols /* =1 */, int rows /* = 1 */) :
     name_{name},
     cols_{cols},
     rows_{rows}
@@ -14,7 +16,8 @@ Grid::Grid(const std::string& name, int cols /* =1 */, int rows /* = 1 */) :
     // row 1
     cells_.emplace_back(std::make_unique<Cell>(std::make_shared<EmptyWidget>("Video 1"), 0, 0, 4, 2));
     cells_.emplace_back(std::make_unique<Cell>(std::make_shared<EmptyWidget>("Video 2"), 4, 0, 4, 2));
-    cells_.emplace_back(std::make_unique<Cell>(std::make_shared<EmptyWidget>("Map"), 8, 0, 4, 2));
+    cells_.emplace_back(std::make_unique<Cell>
+                        (std::make_shared<MapWidget>("Map", irrDriver, imGuiHandle), 8, 0, 4, 2));
 
     // row 2
     cells_.emplace_back(std::make_unique<Cell>(std::make_shared<EmptyWidget>("Blueprint"), 0, 2, 8, 2));
@@ -78,6 +81,12 @@ void Grid::Cell::draw(const Grid& grid) const
     float cellHeight = grid.getCellHeight();
 
     ImGui::SetNextWindowPos(ImVec2(col_ * cellWidth, row_ * cellHeight));
-    ImGui::SetNextWindowSize(ImVec2(colSpan_ * cellWidth, rowSpan_ * cellHeight));
+    auto size = ImVec2(col_ + colSpan_ == grid.cols_ ? colSpan_ * cellWidth : colSpan_ * cellWidth - 5.0,
+                       row_ + rowSpan_ == grid.rows_ ? rowSpan_ * cellHeight : rowSpan_ * cellHeight - 5.0);
+    ImGui::SetNextWindowSize(size);
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
+
     widget_->draw();
+
+    ImGui::PopStyleVar();
 }

@@ -3,6 +3,8 @@
 
 #include "IWidget.h"
 
+#include "IrrIMGUI/IrrIMGUI.h"
+
 #include <string>
 #include <vector>
 
@@ -15,7 +17,6 @@ namespace IrrIMGUI {
 class IGUITexture;
 class IIMGUIHandle;
 }
-class ImVec2;
 
 class MapWidget :
     public IWidget
@@ -28,10 +29,12 @@ public:
     virtual void draw() override;
 
 private:
-    void drawGrid();
-    void drawTerminator(const ImVec2& worldMapStart);
+    void drawGrid(const ImVec2& conentLT, const ImVec2& contentSize );
+    void drawTerminator(const ImVec2& conentLT, const ImVec2& conentSize);
     void updateTerminator();
 
+    ImColor terminatorColor_;
+    ImColor gridColor_;
     int textureWidth_;
     int textureHeight_;
     IrrIMGUI::IIMGUIHandle* const imGuiHandle_;

@@ -5,12 +5,23 @@
 #include <string>
 #include <vector>
 
+namespace irr { namespace video {
+class IVideoDriver;
+}
+}
+
+namespace IrrIMGUI {
+class IGUITexture;
+class IIMGUIHandle;
+}
+
 class IWidget;
 
 class Grid
 {
 public:
-    Grid(const std::string& name, int cols = 1, int rows = 1);
+    Grid(const std::string& name, irr::video::IVideoDriver* const irrDriver,
+         IrrIMGUI::IIMGUIHandle* const imGuiHandle, int cols = 1, int rows = 1);
     virtual ~Grid() = default;
 
     virtual void draw() const;

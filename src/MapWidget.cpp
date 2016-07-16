@@ -27,60 +27,83 @@ MapWidget::~MapWidget()
 
 void MapWidget::draw()
 {
-    ImGui::Begin(name_.c_str());
+    updateTerminator();
+
+    ImGui::Begin(name_.c_str(), NULL,
+                 ImGuiWindowFlags_NoTitleBar
+                 | ImGuiWindowFlags_NoResize
+                 | ImGuiWindowFlags_NoMove
+                 | ImGuiWindowFlags_NoBringToFrontOnFocus
+                 | ImGuiWindowFlags_NoScrollbar);
 
     ImVec2 worldMapStart = ImGui::GetCursorScreenPos();
 
-    ImVec2 region = ImGui::GetContentRegionMax();
+    ImVec2 region = ImGui::GetContentRegionAvail();
     ImGui::Image(mapTexture_, ImVec2(region.x, region.y));
 
-    ImDrawList* draw_list = ImGui::GetWindowDrawList();
-    const double pixelPerDeg = textureWidth_ / 360.0;
+    drawGrid(worldMapStart, region);
+    drawTerminator(worldMapStart, region);
 
-    // draw grid X
-    for(double position = pixelPerDeg * 10; position < textureWidth_; position += pixelPerDeg * 10) {
-        draw_list->AddLine(ImVec2(worldMapStart.x + position, worldMapStart.y),
-                           ImVec2(worldMapStart.x + position, worldMapStart.y + textureHeight_),
-                           ImColor(180, 180, 180, 80), 1.0f);
-    }
-
-    for(int position = pixelPerDeg * 10; position < textureHeight_; position += pixelPerDeg * 10) {
-        draw_list->AddLine(ImVec2(worldMapStart.x, worldMapStart.y + position),
-                           ImVec2(worldMapStart.x + 1080, worldMapStart.y + position),
-                           ImColor(180, 180, 180, 80), 1.0f);
-    }
+    ImGui::End();
 }
 
-void MapWidget::drawGrid()
+void MapWidget::drawGrid(const ImVec2& contentLT, const ImVec2& contentSize)
 {
+    ImDrawList* draw_list = ImGui::GetWindowDrawList();
+    const double pixelPerDegX = (contentSize.x / textureWidth_) * textureWidth_ / 360.0;
+    const double pixelPerDegY = (contentSize.y / textureHeight_) * textureHeight_ / 180.0;
+
+    for(double position = pixelPerDegX * 10; position < contentSize.x; position += pixelPerDegX * 10) {
+        draw_list->AddLine(ImVec2(contentLT.x + position, contentLT.y),
+                           ImVec2(contentLT.x + position, contentLT.y + contentSize.y),
+                           ImColor(180, 180, 180, 80), 1.0f);
+    }
+
+    for(double position = pixelPerDegY * 10; position < contentSize.y; position += pixelPerDegY * 10) {
+        draw_list->AddLine(ImVec2(contentLT.x, contentLT.y + position),
+                           ImVec2(contentLT.x + contentSize.x, contentLT.y + position),
+                           ImColor(180, 180, 180, 80), 1.0f);
+    }
 }
 
-void MapWidget::drawTerminator(const ImVec2& worldMapStart)
+void MapWidget::drawTerminator(const ImVec2& contentLT, const ImVec2& contentSize)
 {
     auto draw_list = ImGui::GetWindowDrawList();
-    double base = worldMapStart.y + textureHeight_;
-    //    draw_list->PathClear();
+    const double pixelPerDegX = (contentSize.x / textureWidth_) * textureWidth_ / 360.0;
+    const double pixelPerDegY = (contentSize.y / textureHeight_) * textureHeight_ / 180.0;
+    double base = contentLT.y + contentSize.y;
+    draw_list->PathClear();
 
-    /*
-    for(double lon = -180; lon <= 180; ++lon) {
-        double lat = atan(cos((lon + tau) * K) / tan(dec * K)) / K;
-        ImGui::Text("Lon: %.2f Lat: %.2f", lon, lat);
-        draw_list->PathLineTo(ImVec2(worldMapStart.x + 540 + lon * 3,
-                                     worldMapStart.y + 270 - lat * 3));
+    double lastX;
+    bool first = true;
+    for(const auto& position : terminatorPoints_) {
+        draw_list->PathLineTo(ImVec2(contentLT.x + contentSize.x / 2 + position.x * pixelPerDegX,
+                                     contentLT.y + contentSize.y / 2 - position.y * pixelPerDegY));
 
-        // since we can only draw convex polygons we need to split the curve in quads
-        if(lon > -180) {
-            draw_list->PathLineTo(ImVec2(worldMapStart.x + 540 + lon * 3, base));
-            draw_list->PathLineTo(ImVec2(worldMapStart.x + 540 + (lon - 1) * 3, base));
-            draw_list->PathFill(ImColor(0, 0, 0, 80));
-            draw_list->PathClear();
-            draw_list->PathLineTo(ImVec2(worldMapStart.x + 540 + lon * 3,
-                                         worldMapStart.y + 270 - lat * 3));
+        if(first) {
+            lastX = position.x;
         }
+
+        if((position.x - lastX) * pixelPerDegX >= 3) {
+            // since we can only draw convex polygons we need to split the curve in quads
+            if(!first) {
+                draw_list->PathLineTo(ImVec2(contentLT.x + contentSize.x / 2 + position.x * pixelPerDegX, base));
+                draw_list->PathLineTo(ImVec2(contentLT.x + contentSize.x / 2 + lastX * pixelPerDegX, base));
+                draw_list->PathFill(ImColor(0, 0, 0, 80));
+                draw_list->PathClear();
+                draw_list->PathLineTo(ImVec2(contentLT.x + contentSize.x / 2 + position.x * pixelPerDegX,
+                                             contentLT.y + contentSize.y / 2 - position.y * pixelPerDegY));
+            }
+            lastX = position.x;
+        }
+        first = false;
     }
-    */
 }
 
+/*
+  based on a matlab script from Mattia Rossi:
+  http://caia.swin.edu.au/mapping/gametraffic/anim100309A/plotdaynightterminator.m
+*/
 void MapWidget::updateTerminator()
 {
     terminatorPoints_.clear();
@@ -126,4 +149,8 @@ void MapWidget::updateTerminator()
     double dec = delta / K;
     double tau = utcHour * 15;
 
+    for(double lon = -180; lon <= 180; ++lon) {
+        double lat = atan(cos((lon + tau) * K) / tan(dec * K)) / K;
+        terminatorPoints_.push_back(ImVec2(lon, lat));
+    }
 }
