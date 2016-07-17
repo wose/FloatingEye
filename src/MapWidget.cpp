@@ -39,7 +39,8 @@ void MapWidget::draw()
     ImVec2 worldMapStart = ImGui::GetCursorScreenPos();
 
     ImVec2 region = ImGui::GetContentRegionAvail();
-    ImGui::Image(mapTexture_, ImVec2(region.x, region.y));
+    ImGui::Image(mapTexture_, ImVec2(region.x, region.y), ImVec2(0,0), ImVec2(1,1),
+                 ImVec4(0.25f, 0.75f, 0.75f, 1.00f), ImVec4(0.25f, 0.75f, 0.75f, 1.00f));
 
     drawGrid(worldMapStart, region);
     drawTerminator(worldMapStart, region);
