@@ -9,6 +9,7 @@ add_definitions(-std=c++14)
 set(IRRIMGUI_BUILD_EXAMPLES off)
 add_subdirectory(3rdparty)
 
+include_directories(src)
 add_subdirectory(src)
 
 if (NOT NO_TESTS)

@@ -1,9 +1,10 @@
 #ifndef FLOATING_EYE_SENSOR_H
 #define FLOATING_EYE_SENSOR_H
 
-#include <exception>
+#include <ctime>
+#include <mutex>
+#include <stdexcept>
 #include <string>
-#include <time>
 
 template<typename T>
 class Sensor
@@ -19,12 +20,16 @@ class Sensor
 
     void updateValue(const T& value)
     {
+        std::lock_guard<std::mutex> lock(valueMutex_);
         value_ = value;
         time(&lastUpdate_);
+        valid_ = true;
     }
 
     T getValue() const
     {
+        std::lock_guard<std::mutex> lock(valueMutex_);
+
         if (!valid_) {
             throw std::runtime_error("invalid value");
         }
@@ -35,6 +40,7 @@ class Sensor
     /// returns seconds since last update
     double getTimeSinceLastUpdate() const
     {
+        std::lock_guard<std::mutex> lock(valueMutex_);
         if (!valid_) {
             return 0;
         }
@@ -43,25 +49,27 @@ class Sensor
         return difftime(now, lastUpdate_);
     }
 
-    string getName() const
+    std::string getName() const
     {
         return name_;
     }
 
-    string getUnit() const
+    std::string getUnit() const
     {
         return unit_;
     }
 
     bool isValid() const
     {
+        std::lock_guard<std::mutex> lock(valueMutex_);
         return valid_;
     }
  private:
-    bool valid_;
+    mutable std::mutex valueMutex_;
+    bool valid_ = false;
     time_t lastUpdate_;
-    std::string name_;
-    std::string unit_; // TODO: use some cpp unit libs?
+    const std::string name_;
+    const std::string unit_; // TODO: use some cpp unit libs?
     T value_;
 };
 
