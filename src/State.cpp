@@ -1,16 +1,11 @@
 #include "State.h"
 
-State::State(const std::string& tle /* = "" */)
+State::State(const std::string& line1, const std::string& line2)
 {
-    update(tle);
+    update(line1, line2);
 }
 
-void State::update(const std::string& tle)
+void State::update(const std::string& line1, const std::string& line2)
 {
 
-}
-
-bool State::isValid() const
-{
-    return false;
 }

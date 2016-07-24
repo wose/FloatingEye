@@ -7,12 +7,16 @@
 class State
 {
 public:
-    State(const std::string& tle = "");
+    State() = default;
+    State(const std::string& line1, const std::string& line2);
+    virtual ~State() = default;
 
-    void update(const std::string& tle);
-    bool isValid() const;
+    void update(const std::string& line1, const std::string& line2);
+    bool isValid() const { return valid_; }
 
 private:
+    bool valid_ = false;
+
     /// https://en.wikipedia.org/wiki/Two-line_element_set
     using TLE_Line1 = std::tuple<
     int,    // Line number
@@ -41,6 +45,9 @@ private:
         double, // Mean Motion (revolutions per day)
         long long, // Revolution number at epoch (revolutions)
         int>;      // Checksum (modulo 10)
+
+    TLE_Line1 line1_;
+    TLE_Line2 line2_;
 };
 
 #endif // FLOATING_EYE_STATE_H

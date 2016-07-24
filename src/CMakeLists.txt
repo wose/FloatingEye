@@ -4,6 +4,7 @@ set(floatingeye_SRC
   Grid.cpp
   MapWidget.cpp
   State.cpp
+  Vessel.cpp
   VideoStream.cpp
   )
 
@@ -12,8 +13,9 @@ set(floatingeye_HDR
   Grid.h
   MapWidget.h
   State.h
-  IWidget.h
+  Vessel.h
   VideoStream.h
+  IWidget.h
   )
 
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
