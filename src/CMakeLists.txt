@@ -1,5 +1,8 @@
 set(floatingeye_SRC
   main.cpp
+  )
+
+set(floatingeyecore_SRC
   EmptyWidget.cpp
   Grid.cpp
   MapWidget.cpp
@@ -8,7 +11,7 @@ set(floatingeye_SRC
   VideoStream.cpp
   )
 
-set(floatingeye_HDR
+set(floatingeyecore_HDR
   EmptyWidget.h
   Grid.h
   MapWidget.h
@@ -39,8 +42,8 @@ include_directories(${IRRLICHT_INCLUDE_DIR} ${OPENGL_INCLUDE_DIR})
 
 add_definitions(-DIMGUI_DISABLE_TEST_WINDOWS)
 
-add_executable(floatingeye ${floatingeye_SRC})
-target_link_libraries(floatingeye
+add_library(floatingeyecore ${floatingeyecore_SRC})
+target_link_libraries(floatingeyecore
   ${OPENGL_LIBRARIES}
   ${IRRLICHT_LIBRARY}
   ${CMAKE_THREAD_LIBS_INIT}
@@ -48,6 +51,11 @@ target_link_libraries(floatingeye
   ${LIBVLCCORE_LIBRARY}
   IrrIMGUI
   lsclient
+  )
+
+add_executable(floatingeye ${floatingeye_SRC})
+target_link_libraries(floatingeye
+  floatingeyecore
   )
 
 add_custom_command(TARGET floatingeye POST_BUILD
