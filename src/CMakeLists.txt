@@ -6,16 +6,21 @@ set(floatingeyecore_SRC
   EmptyWidget.cpp
   Grid.cpp
   MapWidget.cpp
+  SensorWidget.cpp
   State.cpp
   Vessel.cpp
   VideoStream.cpp
   )
 
 set(floatingeyecore_HDR
+  DoubleSensorWidget.h
   EmptyWidget.h
   Grid.h
+  IntSensorWidget.h
   MapWidget.h
-  State.h
+  Sensor.h
+  SensorWidget.h
+  State.h 
   Vessel.h
   VideoStream.h
   IWidget.h

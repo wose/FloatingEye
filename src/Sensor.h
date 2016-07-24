@@ -16,6 +16,12 @@ class Sensor
     {
     }
 
+    Sensor(const Sensor& sensor) :
+        name_{sensor.name_},
+        unit_{sensor.unit_}
+    {
+    }
+
     virtual ~Sensor() = default;
 
     void updateValue(const T& value)
@@ -64,6 +70,7 @@ class Sensor
         std::lock_guard<std::mutex> lock(valueMutex_);
         return valid_;
     }
+
  private:
     mutable std::mutex valueMutex_;
     bool valid_ = false;
