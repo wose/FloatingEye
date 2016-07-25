@@ -40,7 +40,7 @@ include_directories(
   ${LIBVLC_INCLUDE_DIR}/vlc/plugins
   )
 
-include_directories(${PROJECT_SOURCE_DIR}/3rdparty/lsclient/include)
+include_directories(${PROJECT_SOURCE_DIR}/3rdparty/lsclient/src)
 include_directories(${PROJECT_SOURCE_DIR}/3rdparty/IrrIMGUI/includes)
 include_directories(${PROJECT_SOURCE_DIR}/3rdparty/IrrIMGUI/dependency)
 include_directories(${IRRLICHT_INCLUDE_DIR} ${OPENGL_INCLUDE_DIR})

@@ -1,6 +1,8 @@
 #ifndef FLOATING_EYE_GRID_H
 #define FLOATING_EYE_GRID_H
 
+#include "ISS.h"
+
 #include <memory>
 #include <string>
 #include <vector>
@@ -50,6 +52,7 @@ private:
     int cols_;
     int rows_;
     std::string name_;
+    ISS iss_;
 
     std::vector<std::unique_ptr<Cell>> cells_;
 };

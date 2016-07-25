@@ -29,11 +29,11 @@ Grid::Grid(const std::string& name, irr::video::IVideoDriver* const irrDriver,
     // row 3
     auto sensorWidget = std::make_shared<SensorWidget>("Channel 1A");
     auto sensor = std::make_shared<Sensor<double>>("Voltage", "V");
-    sensorWidget->addSensor(std::make_shared<DoubleSensorWidget>(std::move(sensor)));
+    sensorWidget->addSensor(std::make_shared<DoubleSensorWidget>(iss_.c1AVoltage_));
     sensorWidget->addSensor(std::make_shared<DoubleSensorWidget>
                             (std::make_shared<Sensor<double>>("Current", "A")));
     sensorWidget->addSensor(std::make_shared<DoubleSensorWidget>
-                            (std::make_shared<Sensor<double>>("Position", "deg")));
+                            (std::make_shared<Sensor<double>>("Position", "deg"), SWStyle::Rotary));
     cells_.emplace_back(std::make_unique<Cell>(std::move(sensorWidget), 0, 4, 1, 1));
     cells_.emplace_back(std::make_unique<Cell>(std::make_shared<EmptyWidget>("Sensor 2"), 1, 4, 1, 1));
     cells_.emplace_back(std::make_unique<Cell>(std::make_shared<EmptyWidget>("Sensor 3"), 2, 4, 1, 1));
