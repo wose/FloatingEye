@@ -1,8 +1,9 @@
+#include "EnumSensorWidget.h"
 #include "EmptyWidget.h"
 #include "Grid.h"
 #include "IWidget.h"
 #include "MapWidget.h"
-#include "DoubleSensorWidget.h"
+#include "AnalogSensorWidget.h"
 #include "IntSensorWidget.h"
 #include "SensorWidget.h"
 
@@ -29,13 +30,17 @@ Grid::Grid(const std::string& name, irr::video::IVideoDriver* const irrDriver,
     // row 3
     auto sensorWidget = std::make_shared<SensorWidget>("Channel 1A");
     auto sensor = std::make_shared<Sensor<double>>("Voltage", "V");
-    sensorWidget->addSensor(std::make_shared<DoubleSensorWidget>(iss_.c1AVoltage_));
-    sensorWidget->addSensor(std::make_shared<DoubleSensorWidget>
+    sensorWidget->addSensor(std::make_shared<AnalogSensorWidget>(iss_.c1AVoltage_));
+    sensorWidget->addSensor(std::make_shared<AnalogSensorWidget>
                             (std::make_shared<Sensor<double>>("Current", "A")));
-    sensorWidget->addSensor(std::make_shared<DoubleSensorWidget>
+    sensorWidget->addSensor(std::make_shared<AnalogSensorWidget>
                             (std::make_shared<Sensor<double>>("Position", "deg"), SWStyle::Rotary));
     cells_.emplace_back(std::make_unique<Cell>(std::move(sensorWidget), 0, 4, 1, 1));
-    cells_.emplace_back(std::make_unique<Cell>(std::make_shared<EmptyWidget>("Sensor 2"), 1, 4, 1, 1));
+
+    sensorWidget = std::make_shared<SensorWidget>("Hi P O2 Supply");
+    sensorWidget->addSensor(std::make_shared<EnumSensorWidget>
+                            (std::make_shared<Sensor<int>>("State", "")));
+    cells_.emplace_back(std::make_unique<Cell>(std::move(sensorWidget), 1, 4, 1, 1));
     cells_.emplace_back(std::make_unique<Cell>(std::make_shared<EmptyWidget>("Sensor 3"), 2, 4, 1, 1));
     cells_.emplace_back(std::make_unique<Cell>(std::make_shared<EmptyWidget>("Sensor 4"), 3, 4, 1, 1));
     cells_.emplace_back(std::make_unique<Cell>(std::make_shared<EmptyWidget>("Sensor 5"), 4, 4, 1, 1));

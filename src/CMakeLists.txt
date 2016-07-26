@@ -3,6 +3,8 @@ set(floatingeye_SRC
   )
 
 set(floatingeyecore_SRC
+  AnalogSensorWidget.cpp
+  EnumSensorWidget.cpp
   EmptyWidget.cpp
   Grid.cpp
   MapWidget.cpp
@@ -13,7 +15,8 @@ set(floatingeyecore_SRC
   )
 
 set(floatingeyecore_HDR
-  DoubleSensorWidget.h
+  AnalogSensorWidget.h
+  EnumSensorWidget.h
   EmptyWidget.h
   Grid.h
   IntSensorWidget.h
