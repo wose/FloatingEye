@@ -40,10 +40,11 @@ void MapWidget::draw()
 
     ImVec2 region = ImGui::GetContentRegionAvail();
     ImGui::Image(mapTexture_, ImVec2(region.x, region.y), ImVec2(0,0), ImVec2(1,1),
-                 ImVec4(0.25f, 0.75f, 0.75f, 1.00f), ImVec4(0.25f, 0.75f, 0.75f, 1.00f));
+                 ImVec4(0.8f, 0.8f, 0.8f, 1.0f), ImVec4(0.161, 0.769, 0.769, 1.0));
 
     drawGrid(worldMapStart, region);
     drawTerminator(worldMapStart, region);
+    drawVessels(worldMapStart, region);
 
     ImGui::End();
 }
@@ -99,6 +100,8 @@ void MapWidget::drawTerminator(const ImVec2& contentLT, const ImVec2& contentSiz
         }
         first = false;
     }
+
+    draw_list->PathClear();
 }
 
 /*
@@ -154,4 +157,30 @@ void MapWidget::updateTerminator()
         double lat = atan(cos((lon + tau) * K) / tan(dec * K)) / K;
         terminatorPoints_.push_back(ImVec2(lon, lat));
     }
+}
+
+void MapWidget::drawVessels(const ImVec2& contentLT, const ImVec2& contentSize)
+{
+    // TODO get all vessels and plot thier position
+    ImVec2 position{12.916667, 50.83333};
+    std::string label{"ISS"};
+
+
+    auto drawList = ImGui::GetWindowDrawList();
+
+    const float pixelPerDegX = (contentSize.x / textureWidth_) * textureWidth_ / 360.0;
+    const float pixelPerDegY = (contentSize.y / textureHeight_) * textureHeight_ / 180.0;
+
+    ImVec2 pxlPos{contentLT.x + contentSize.x / 2 + position.x * pixelPerDegX,
+            contentLT.y + contentSize.y / 2 - position.y * pixelPerDegY};
+
+    ImColor markerCol{41, 196, 196, 255};
+
+    auto textSize = ImGui::CalcTextSize(label.c_str());
+    drawList->AddLine(pxlPos, ImVec2(pxlPos.x - 10, pxlPos.y - 10), markerCol);
+    drawList->AddLine(pxlPos, ImVec2(pxlPos.x + 5, pxlPos.y - 5), markerCol);
+    drawList->AddLine(ImVec2(pxlPos.x -10, pxlPos.y - 10),
+                      ImVec2(pxlPos.x - textSize.x - 10, pxlPos.y - 10), markerCol);
+    ImGui::SetCursorScreenPos(ImVec2(pxlPos.x - textSize.x - 10, pxlPos.y - textSize.y - 10));
+    ImGui::Text("%s", label.c_str());
 }

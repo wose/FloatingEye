@@ -31,6 +31,7 @@ public:
 private:
     void drawGrid(const ImVec2& conentLT, const ImVec2& contentSize );
     void drawTerminator(const ImVec2& conentLT, const ImVec2& conentSize);
+    void drawVessels(const ImVec2& contentLT, const ImVec2& contentSize);
     void updateTerminator();
 
     ImColor terminatorColor_;
