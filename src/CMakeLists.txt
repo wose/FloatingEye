@@ -7,6 +7,7 @@ set(floatingeyecore_SRC
   EnumSensorWidget.cpp
   EmptyWidget.cpp
   Grid.cpp
+  ISS.cpp
   MapWidget.cpp
   SensorWidget.cpp
   State.cpp
@@ -20,6 +21,7 @@ set(floatingeyecore_HDR
   EmptyWidget.h
   Grid.h
   IntSensorWidget.h
+  ISS.h
   MapWidget.h
   Sensor.h
   SensorWidget.h
