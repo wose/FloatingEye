@@ -4,11 +4,13 @@ set(floatingeye_SRC
 
 set(floatingeyecore_SRC
   AnalogSensorWidget.cpp
+  BodyWidget.cpp
   EnumSensorWidget.cpp
   EmptyWidget.cpp
   Grid.cpp
   ISS.cpp
   MapWidget.cpp
+  Primitives.cpp
   SensorWidget.cpp
   State.cpp
   Vessel.cpp
@@ -17,12 +19,14 @@ set(floatingeyecore_SRC
 
 set(floatingeyecore_HDR
   AnalogSensorWidget.h
+  BodyWidget.h
   EnumSensorWidget.h
   EmptyWidget.h
   Grid.h
   IntSensorWidget.h
   ISS.h
   MapWidget.h
+  Primitives.h
   Sensor.h
   SensorWidget.h
   State.h 

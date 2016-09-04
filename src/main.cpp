@@ -1,3 +1,4 @@
+#include "BodyWidget.h"
 #include "EmptyWidget.h"
 #include "Grid.h"
 #include "VideoStream.h"
@@ -10,7 +11,6 @@
 using namespace irr;
 using namespace IrrIMGUI;
 
-void calculateTerminator(ImVec2& worldMapStart);
 
 int main (int argc, char *argv[]) {
     // Irrlicht OpenGL Settings
@@ -38,10 +38,34 @@ int main (int argc, char *argv[]) {
 
     //VideoStream videoStream("", pDriver, pGUI);
 
-    // add camera to the scene
-    pSceneManager->addCameraSceneNode(0, core::vector3df(0, 0, 0), core::vector3df(0,0,5));
+    scene::ISceneNode * const pMainScreen = pSceneManager->addEmptySceneNode();
+
+    //    auto phobosTexture = pDriver->getTexture("res/Phobos.jpg");
+    //    pMoon->setMaterialTexture(0, phobosTexture);
+    //    pMoon->setMaterialFlag(video::EMF_LIGHTING, false);
+
+    // Add camera object
+    const auto pMainCam = pSceneManager->addCameraSceneNode(pMainScreen,
+                                                            core::vector3df(0, 0, 0),
+                                                            core::vector3df(0, 0, 5));
+    //   auto filledPolygonTexture = pDriver->addTexture(core::dimension2d<u32>(1,1),
+    //                                               "filledPolygonColor",
+    //                                               video::ECF_A8R8G8B8);
+   //   p = (s32*)filledPolygonTexture->lock();
+   //   p[0] = video::SColor(58, 0, 255, 255).color;
+   //   filledPolygonTexture->unlock();
+
+   //   irr::video::SMaterial mat2;
+   //   mat2.Lighting = false;
+   //   mat2.setTexture(0, filledPolygonTexture);
+   //   mat2.setFlag(video::EMF_COLOR_MASK, true);
+   //   mat2.BlendOperation = video::EBO_ADD;
+   //   mat.setFlag(video::EMF_WIREFRAME, true);
+   // add camera to the scene
+   //    pSceneManager->addCameraSceneNode(0, core::vector3df(0, 0, 0), core::vector3df(0,0,5));
 
     {
+        BodyWidget body("TestBody", pDevice, pGUI);
         Grid layout("ISS", pDriver, pGUI, 12, 5);
 
         ImGuiStyle& style = ImGui::GetStyle();
@@ -93,11 +117,19 @@ int main (int argc, char *argv[]) {
         while(pDevice->run())
         {
             pDriver->beginScene(true, true, irr::video::SColor(255, 80, 80, 80));
+            pMainScreen->setVisible(false);
+
+            body.render();
+
+            pDriver->setRenderTarget(0, true, true, video::SColor(255, 80, 80, 80));
+            pMainScreen->setVisible(true);
+            pSceneManager->setActiveCamera(pMainCam);
 
             // create the GUI elements
             pGUI->startGUI();
             layout.draw();
 
+            body.draw();
             auto mousePosition = ImGui::GetIO().MousePos;
             if(mousePosition.y < 20) {
                 if(ImGui::BeginMainMenuBar()) {
@@ -109,16 +141,12 @@ int main (int argc, char *argv[]) {
                 }
             }
 
-            // render your scene
             pSceneManager->drawAll();
-
-            // render the GUI
             pGUI->drawAll();
 
             pDriver->endScene();
         }
     }
-
     // free up memory
     pGUI->drop();
     pDevice->drop();
