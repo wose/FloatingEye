@@ -26,12 +26,18 @@ BodyWidget::BodyWidget(const std::string& name, irr::IrrlichtDevice* const irrDe
     renderTarget_ = driver->addRenderTargetTexture(core::dimension2d<u32>(512, 512), name_.c_str());
     renderTargetID_ = imGuiHandle->createTexture(renderTarget_);
 
+    sceneManager->setAmbientLight(SColorf(0.3f, 0.3f, 0.3f));
+    auto lightNode = sceneManager->addLightSceneNode(sceneNode_,
+                                                     vector3df(30, 0, 0),
+                                                     SColorf(1.0f, 1.0f, 1.0f),
+                                                     100.0f);
+
     meshTexture_ = driver->getTexture("res/Phobos.jpg");
 
     meshNode_ = sceneManager->addSphereSceneNode(5.0, 64, sceneNode_);
     meshNode_->setPosition(vector3df(0.0, 0.0, 0.0));
     meshNode_->setMaterialTexture(0, meshTexture_);
-    meshNode_->setMaterialFlag(EMF_LIGHTING, false);
+    meshNode_->setMaterialFlag(EMF_LIGHTING, true);
 
     edgeTexture_ = createColorTexture(driver, SColor(255, 0, 255, 255));
     markerMaterial_.Lighting = false;
@@ -61,21 +67,27 @@ void BodyWidget::render()
     sceneNode_->setVisible(true);
     sceneManager->setActiveCamera(cameraNode_);
 
+    meshNode_->setVisible(false);
     if (showTexture_) {
+        meshNode_->setMaterialFlag(EMF_LIGHTING, true);
         meshNode_->setMaterialTexture(0, meshTexture_);
         meshNode_->setMaterialFlag(video::EMF_POINTCLOUD, false);
         meshNode_->setMaterialFlag(video::EMF_BACK_FACE_CULLING, true);
-        sceneManager->drawAll();
+        meshNode_->setVisible(true);
     }
 
     if (showPointCloud_) {
+        sceneManager->drawAll();
+        meshNode_->setScale(vector3df(1.05, 1.05, 1.05));
+        meshNode_->setMaterialFlag(EMF_LIGHTING, false);
         meshNode_->setMaterialTexture(0, edgeTexture_);
         meshNode_->setMaterialFlag(video::EMF_POINTCLOUD, true);
         meshNode_->setMaterialFlag(video::EMF_BACK_FACE_CULLING, false);
-        sceneManager->drawAll();
+        meshNode_->setVisible(true);
     }
 
-    //    sceneManager->drawAll();
+    sceneManager->drawAll();
+    meshNode_->setScale(vector3df(1, 1, 1));
 
     driver->setMaterial(markerMaterial_);
     for (auto meshBuffer : meshBuffers_) {
